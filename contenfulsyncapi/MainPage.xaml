@@ -1,0 +1,45 @@
+﻿<?xml version="1.0" encoding="utf-8" ?>
+<ContentPage xmlns="http://xamarin.com/schemas/2014/forms"
+             xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+             x:Class="contenfulsyncapi.MainPage"
+             NavigationPage.HasNavigationBar="True"
+             Title="Contentful Sync API">
+
+    <StackLayout Orientation="Vertical" Padding="10, 10, 10, 10">
+        <StackLayout Orientation="Vertical">
+            <Label Text="Space ID"/>
+            <Entry x:Name="entry_space" Text="{Binding Space}"/>
+        </StackLayout>
+        <StackLayout Orientation="Vertical">
+            <Label Text="Access Token"/>
+            <Entry x:Name="entry_accessToken" Text="{Binding AccessToken}"/>
+        </StackLayout>
+        <StackLayout Orientation="Vertical">
+            <Label Text="Environment"/>
+            <Entry x:Name="entry_environment" Text="{Binding Environment}"/>
+        </StackLayout>
+        <StackLayout Orientation="Vertical" IsVisible="{Binding IsSpaceSelected}">
+            <Label Text="Type"/>
+            <Picker x:Name="picker_type" Title="Select a Type">
+                <Picker.Items>
+                    <x:String>All</x:String>
+                    <x:String>Asset</x:String>
+                    <x:String>Entry</x:String>
+                    <x:String>Deletion</x:String>
+                    <x:String>DeletedAsset</x:String>
+                    <x:String>DeletedEntry</x:String>
+                </Picker.Items>
+            </Picker>
+        </StackLayout>
+        <StackLayout Orientation="Vertical" IsVisible="{Binding IsSpaceSelected}">
+            <Label Text="Content Type"/>
+            <Picker x:Name="picker_contentType" Title="Select a Content Type" ItemsSource="{Binding ContentTypes}"/>
+        </StackLayout>
+        <StackLayout Orientation="Vertical" IsVisible="{Binding IsSpaceSelected}">
+            <Label Text="Recursive"/>
+            <Switch x:Name="switch_Recursive" IsToggled="{Binding Recursive}" HorizontalOptions="Start"/>
+        </StackLayout>
+        <Button x:Name="btn_Request" Clicked="btn_Request_Clicked" Text="{Binding RequestButtonText}"/>
+    </StackLayout>
+
+</ContentPage>

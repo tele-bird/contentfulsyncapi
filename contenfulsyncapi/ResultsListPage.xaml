@@ -1,0 +1,70 @@
+﻿<?xml version="1.0" encoding="UTF-8" ?>
+<ContentPage
+    xmlns="http://xamarin.com/schemas/2014/forms"
+    xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+    xmlns:local="clr-namespace:contenfulsyncapi.ViewModel"
+    x:Class="contenfulsyncapi.ResultsListPage"
+    NavigationPage.HasNavigationBar="True"
+    Title="{Binding PageTitle}">
+    <ContentPage.Resources>
+        <ResourceDictionary>
+            <DataTemplate x:Key="updatedAppearanceTemplate">
+                <StackLayout Orientation="Vertical" Margin="0, 0, 0, 0" Padding="2">
+                    <StackLayout Orientation="Horizontal">
+                        <Label TextColor="{StaticResource UpdatedTextColor}" LineBreakMode="NoWrap" FontAttributes="Bold" Text="{Binding ContentTypeId}"/>
+                        <Label TextColor="{StaticResource UpdatedTextColor}" Text="{Binding Id}"/>
+                    </StackLayout>
+                    <Label TextColor="{StaticResource UpdatedTextColor}">
+                        <Label.FormattedText>
+                            <FormattedString>
+                                <Span Text="Version: "/>
+                                <Span Text="{Binding Revision}"/>
+                                <Span Text="    Updated:"/>
+                                <Span Text="{Binding UpdatedAt}"/>
+                            </FormattedString>
+                        </Label.FormattedText>
+                    </Label>
+                    <Label TextColor="{StaticResource UpdatedTextColor}" Text="{Binding Fields.InternalName.EnUs}"/>
+                    <BoxView BackgroundColor="LightSteelBlue" HeightRequest="1"/>
+                </StackLayout>
+            </DataTemplate>
+            <DataTemplate x:Key="notUpdatedAppearanceTemplate">
+                <StackLayout Orientation="Vertical" Margin="0, 0, 0, 0" Padding="2">
+                    <StackLayout Orientation="Horizontal">
+                        <Label TextColor="{StaticResource NormalTextColor}" LineBreakMode="NoWrap" FontAttributes="Bold" Text="{Binding ContentTypeId}"/>
+                        <Label TextColor="{StaticResource NormalTextColor}" Text="{Binding Id}"/>
+                    </StackLayout>
+                    <Label TextColor="{StaticResource NormalTextColor}">
+                        <Label.FormattedText>
+                            <FormattedString>
+                                <Span Text="Version: "/>
+                                <Span Text="{Binding Revision}"/>
+                                <Span Text="    Updated:"/>
+                                <Span Text="{Binding UpdatedAt}"/>
+                            </FormattedString>
+                        </Label.FormattedText>
+                    </Label>
+                    <Label TextColor="{StaticResource NormalTextColor}" Text="{Binding Fields.InternalName.EnUs}"/>
+                    <BoxView BackgroundColor="LightSteelBlue" HeightRequest="1"/>
+                </StackLayout>
+            </DataTemplate>
+            <local:EntryItemDataTemplateSelector
+                x:Key="entryItemDataTemplateSelector"
+                UpdatedAppearanceTemplate="{StaticResource updatedAppearanceTemplate}"
+                NotUpdatedAppearanceTemplate="{StaticResource notUpdatedAppearanceTemplate}" />
+        </ResourceDictionary>
+    </ContentPage.Resources>
+    <StackLayout Orientation="Vertical">
+        <CollectionView
+            x:Name="cv_Response"
+            ItemsSource="{Binding Entries}"
+            SelectionMode="Single"
+            SelectionChanged="cv_Response_SelectionChanged"
+            ItemTemplate="{StaticResource entryItemDataTemplateSelector}">
+        </CollectionView>
+        <Button x:Name="btn_LoadNextPage" IsEnabled="{Binding IsLoadNextPageButtonEnabled}" Clicked="btn_LoadNextPage_Clicked" Text="Load Next Page"/>
+        <Button x:Name="btn_UpdateResults" IsEnabled="{Binding IsUpdateResultsButtonEnabled}" Clicked="btn_UpdateResults_Clicked" Text="Update Results"/>
+        <Label x:Name="lbl_PreviousUpdated" Text="{Binding PreviousUpdatedText}" TextColor="Blue" />
+        <Label x:Name="lbl_LastUpdated" Text="{Binding LastUpdatedText}" TextColor="Blue" />
+     </StackLayout>
+</ContentPage>
