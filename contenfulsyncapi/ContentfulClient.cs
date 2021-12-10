@@ -66,6 +66,10 @@ namespace contenfulsyncapi
 
         public async Task<SyncResult> RequestInitialSyncNET(SyncType syncType, Contentful.Core.Models.ContentType contentType, bool recursive)
         {
+            if((null != contentType) && (syncType != SyncType.Entry))
+            {
+                throw new Exception("When passing a content_type the type must be set to Entry.");
+            }
             using(var httpClient = new HttpClient())
             {
                 var client = new Contentful.Core.ContentfulClient(httpClient, options);
