@@ -20,12 +20,43 @@ namespace contenfulsyncapi.iOS
         //
         // You have 17 seconds to return from this method, or iOS will terminate your application.
         //
-        public override bool FinishedLaunching(UIApplication app, NSDictionary options)
+        //public override bool FinishedLaunching(UIApplication app, NSDictionary options)
+        //{
+        //    global::Xamarin.Forms.Forms.Init();
+        //    LoadApplication(new App("","",""));
+
+        //    return base.FinishedLaunching(app, options);
+        //}
+
+        [Export("application:didFinishLaunchingWithOptions:")]
+        public override bool FinishedLaunching(UIApplication application, NSDictionary launchOptions)
         {
             global::Xamarin.Forms.Forms.Init();
-            LoadApplication(new App());
-
-            return base.FinishedLaunching(app, options);
+            string spaceId = null;
+            string accessToken = null;
+            string environment = null;
+            string keyString = "-app-arg=";
+            foreach(string arg in NSProcessInfo.ProcessInfo.Arguments)
+            {
+                if(arg.StartsWith(keyString))
+                {
+                    string stringValue = arg.Substring(keyString.Length);
+                    if (null == spaceId)
+                    {
+                        spaceId = stringValue;
+                    }
+                    else if(null == accessToken)
+                    {
+                        accessToken = stringValue;
+                    }
+                    else if(null == environment)
+                    {
+                        environment = stringValue;
+                    }
+                }
+            }
+            LoadApplication(new App(spaceId, accessToken, environment));
+            return base.FinishedLaunching(application, launchOptions);
         }
     }
 }

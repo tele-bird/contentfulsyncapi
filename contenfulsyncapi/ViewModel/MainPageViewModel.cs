@@ -9,13 +9,13 @@ namespace contenfulsyncapi.ViewModel
     {
         public ObservableCollection<ContentTypeViewModel> ContentTypes { get; set; }
 
-        private string mSpace;
-        public string Space
+        private string mSpaceId;
+        public string SpaceId
         {
-            get { return mSpace; }
+            get { return mSpaceId; }
             set
             {
-                base.SetProperty<string>(ref mSpace, value, "Space");
+                base.SetProperty<string>(ref mSpaceId, value, "SpaceId");
             }
         }
 
@@ -39,58 +39,9 @@ namespace contenfulsyncapi.ViewModel
             }
         }
 
-        private bool mIsSpaceSelected;
-        public bool IsSpaceSelected
-        {
-            get { return mIsSpaceSelected; }
-            private set
-            {
-                base.SetProperty<bool>(ref mIsSpaceSelected, value, "IsSpaceSelected");
-                RequestButtonText = IsSpaceSelected ? "Request Content" : "Request Content Types";
-            }
-        }
-
-        private string mRequestButtonText;
-        public string RequestButtonText
-        {
-            get { return mRequestButtonText; }
-            set
-            {
-                base.SetProperty<string>(ref mRequestButtonText, value, "RequestButtonText");
-            }
-        }
-
-        private bool mRecursive;
-        public bool Recursive
-        {
-            get { return mRecursive; }
-            set
-            {
-                base.SetProperty<bool>(ref mRecursive, value, "Recursive");
-            }
-        }
-
         public MainPageViewModel()
         {
             ContentTypes = new ObservableCollection<ContentTypeViewModel>();
-            IsSpaceSelected = false;
-        }
-
-        public MainPageViewModel(SynchronizedContentTypes synchronizedContentTypes)
-            : this()
-        {
-            Refresh(synchronizedContentTypes);
-        }
-
-        public void Refresh(SynchronizedContentTypes synchronizedContentTypes)
-        {
-            ContentTypes.Clear();
-            foreach (ContentType contentType in synchronizedContentTypes.ContentTypesByName.Values)
-            {
-                ContentTypes.Add(new ContentTypeViewModel(contentType));
-            }
-            ContentTypes.Insert(0, ContentTypeViewModel.ALL_CONTENT_TYPES);
-            IsSpaceSelected = true;
         }
     }
 }

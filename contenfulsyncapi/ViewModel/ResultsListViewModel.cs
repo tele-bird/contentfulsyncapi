@@ -36,7 +36,7 @@ namespace contenfulsyncapi.ViewModel
                 Entries.Add(newEntryViewModel);
                 if (newEntryViewModel.Updated) ++updatedCount;
             }
-            PageTitle = $"Results: {synchronizedEntries.Entries.Count} entries ({updatedCount} updated)";
+            PageTitle = $"Results: {synchronizedEntries.Entries.Count} items ({updatedCount} updated)";
             IsLoadNextPageButtonEnabled = synchronizedEntries.HasNextPageUrl;
             IsUpdateResultsButtonEnabled = synchronizedEntries.HasNextSyncUrl;
             if(synchronizedEntries.PreviousUpdatedUtc.HasValue)

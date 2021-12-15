@@ -1,0 +1,23 @@
+﻿<?xml version="1.0" encoding="UTF-8" ?>
+<ContentPage
+    xmlns="http://xamarin.com/schemas/2014/forms"
+    xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+    xmlns:controls="clr-namespace:contenfulsyncapi.Control"
+    xmlns:enums="clr-namespace:Contentful.Core.Models;assembly=Contentful.Core"
+    x:Class="contenfulsyncapi.SelectFiltersPage"
+    NavigationPage.HasNavigationBar="True"
+    Title="Filter Selection">
+    <ContentPage.Content>
+        <StackLayout Orientation="Vertical" Padding="10, 10, 10, 10">
+            <StackLayout Orientation="Vertical">
+                <Label Text="Sync Type"/>
+                <controls:EnumBindablePicker x:Name="picker_syncType" x:TypeArguments="enums:SyncType" Title="(optional)" SelectedIndex="{Binding SelectedSyncTypeIndex}"/>
+                <Label Text="Content Type"/>
+                <Picker x:Name="picker_contentType" Title="(optional)" ItemsSource="{Binding ContentTypes}" ItemDisplayBinding="{Binding Name}" SelectedItem="{Binding SelectedContentType}"/>
+                <Label Text="Recursive"/>
+                <Switch x:Name="switch_Recursive" IsToggled="{Binding Recursive}" HorizontalOptions="Start"/>
+            </StackLayout>
+            <Button x:Name="btn_RequestContent" Clicked="btn_RequestContent_Clicked" Text="Request Content"/>
+        </StackLayout>
+    </ContentPage.Content>
+</ContentPage>

@@ -23,10 +23,12 @@
     <None Remove="Dto\DB\" />
     <None Remove="ViewModel\" />
     <None Remove="contentful.csharp" />
+    <None Remove="Control\" />
   </ItemGroup>
   <ItemGroup>
     <Folder Include="Dto\" />
     <Folder Include="Dto\DB\" />
     <Folder Include="ViewModel\" />
+    <Folder Include="Control\" />
   </ItemGroup>
 </Project>

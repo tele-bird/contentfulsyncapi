@@ -8,11 +8,11 @@ namespace contenfulsyncapi
 {
     public partial class App : Application
     {
-        public App()
+        public App(string spaceId, string accessToken, string environment)
         {
             InitializeComponent();
 
-            MainPage = new NavigationPage(new MainPage());
+            MainPage = new NavigationPage(new MainPage(spaceId, accessToken, environment));
         }
 
         protected override void OnStart()
@@ -28,7 +28,7 @@ namespace contenfulsyncapi
         }
 
         public static SynchronizedEntries SyncEntries { get; private set; } = new SynchronizedEntries();
-        public static SynchronizedContentTypes SyncContentTypes { get; private set; } = new SynchronizedContentTypes();
+        //public static SynchronizedContentTypes SyncContentTypes { get; private set; } = new SynchronizedContentTypes();
 
         //public static Dictionary<string, SyncedAsset> SyncedAssetsById = new Dictionary<string, SyncedAsset>();
 
