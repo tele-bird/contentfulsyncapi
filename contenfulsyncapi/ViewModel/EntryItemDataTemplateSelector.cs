@@ -13,7 +13,7 @@ namespace contenfulsyncapi.ViewModel
 
         protected override DataTemplate OnSelectTemplate(object item, BindableObject container)
         {
-            return ((EntryViewModel)item).Updated ? UpdatedAppearanceTemplate : NotUpdatedAppearanceTemplate;
+            return ((ResultViewModel)item).Updated ? UpdatedAppearanceTemplate : NotUpdatedAppearanceTemplate;
         }
     }
 }

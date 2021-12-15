@@ -6,7 +6,7 @@
     xmlns:enums="clr-namespace:Contentful.Core.Models;assembly=Contentful.Core"
     x:Class="contenfulsyncapi.SelectFiltersPage"
     NavigationPage.HasNavigationBar="True"
-    Title="Filter Selection">
+    Title="Sync API: Filter Selection">
     <ContentPage.Content>
         <StackLayout Orientation="Vertical" Padding="10, 10, 10, 10">
             <StackLayout Orientation="Vertical">
@@ -17,7 +17,7 @@
                 <Label Text="Recursive"/>
                 <Switch x:Name="switch_Recursive" IsToggled="{Binding Recursive}" HorizontalOptions="Start"/>
             </StackLayout>
-            <Button x:Name="btn_RequestContent" Clicked="btn_RequestContent_Clicked" Text="Request Content"/>
+            <Button x:Name="btn_RequestContent" Clicked="btn_RequestContent_Clicked" Text="Request Initial Content"/>
         </StackLayout>
     </ContentPage.Content>
 </ContentPage>

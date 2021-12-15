@@ -6,11 +6,11 @@ namespace contenfulsyncapi.ViewModel
 {
     public class ResultsListViewModel : SyncedDataViewModel
     {
-        public ObservableCollection<EntryViewModel> Entries { get; set; }
+        public ObservableCollection<ResultViewModel> Entries { get; set; }
 
         public ResultsListViewModel(SynchronizedEntries synchronizedData)
         {
-            Entries = new ObservableCollection<EntryViewModel>();
+            Entries = new ObservableCollection<ResultViewModel>();
             Refresh(synchronizedData);
         }
 
@@ -18,10 +18,10 @@ namespace contenfulsyncapi.ViewModel
         {
             int updatedCount = 0;
             int i;
-            EntryViewModel itemToBeReplaced;
+            ResultViewModel itemToBeReplaced;
             foreach (Entry<dynamic> entry in synchronizedEntries.Entries.Values)
             {
-                EntryViewModel newEntryViewModel = new EntryViewModel(entry);
+                ResultViewModel newEntryViewModel = new ResultViewModel(entry);
                 if(Entries.Contains(newEntryViewModel))
                 {
                     i = Entries.IndexOf(newEntryViewModel);
@@ -36,7 +36,7 @@ namespace contenfulsyncapi.ViewModel
                 Entries.Add(newEntryViewModel);
                 if (newEntryViewModel.Updated) ++updatedCount;
             }
-            PageTitle = $"Results: {synchronizedEntries.Entries.Count} items ({updatedCount} updated)";
+            PageTitle = $"Sync API Results: {synchronizedEntries.Entries.Count} items ({updatedCount} updated)";
             IsLoadNextPageButtonEnabled = synchronizedEntries.HasNextPageUrl;
             IsUpdateResultsButtonEnabled = synchronizedEntries.HasNextSyncUrl;
             if(synchronizedEntries.PreviousUpdatedUtc.HasValue)

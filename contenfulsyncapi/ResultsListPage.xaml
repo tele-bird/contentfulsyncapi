@@ -11,6 +11,7 @@
             <DataTemplate x:Key="updatedAppearanceTemplate">
                 <StackLayout Orientation="Vertical" Margin="0, 0, 0, 0" Padding="2">
                     <StackLayout Orientation="Horizontal">
+                        <Label TextColor="{StaticResource UpdatedTextColor}" LineBreakMode="NoWrap" TextDecorations="Underline" FontAttributes="Bold" Text="{Binding SyncType}"/>
                         <Label TextColor="{StaticResource UpdatedTextColor}" LineBreakMode="NoWrap" FontAttributes="Bold" Text="{Binding ContentTypeId}"/>
                         <Label TextColor="{StaticResource UpdatedTextColor}" Text="{Binding Id}"/>
                     </StackLayout>
@@ -31,6 +32,7 @@
             <DataTemplate x:Key="notUpdatedAppearanceTemplate">
                 <StackLayout Orientation="Vertical" Margin="0, 0, 0, 0" Padding="2">
                     <StackLayout Orientation="Horizontal">
+                        <Label TextColor="{StaticResource NormalTextColor}" LineBreakMode="NoWrap" TextDecorations="Underline" FontAttributes="Bold" Text="{Binding SyncType}"/>
                         <Label TextColor="{StaticResource NormalTextColor}" LineBreakMode="NoWrap" FontAttributes="Bold" Text="{Binding ContentTypeId}"/>
                         <Label TextColor="{StaticResource NormalTextColor}" Text="{Binding Id}"/>
                     </StackLayout>

@@ -6,11 +6,13 @@ using Newtonsoft.Json.Linq;
 
 namespace contenfulsyncapi.ViewModel
 {
-    public class EntryViewModel
+    public class ResultViewModel
     {
         public string Name { get; private set; }
 
         public bool Updated { get; internal set; }
+
+        public SyncType SyncType { get; private set; }
 
         public string ContentTypeId { get; private set; }
 
@@ -22,8 +24,9 @@ namespace contenfulsyncapi.ViewModel
 
         public RecipeFields Fields { get; private set; }
 
-        public EntryViewModel(Entry<dynamic> entry)
+        public ResultViewModel(Entry<dynamic> entry)
         {
+            SyncType = (SyncType)Enum.Parse(typeof(SyncType), entry.SystemProperties.Type);
             ContentTypeId = entry.SystemProperties.ContentType.SystemProperties.Id;
             Id = entry.SystemProperties.Id;
             Revision = entry.SystemProperties.Revision;
@@ -46,7 +49,7 @@ namespace contenfulsyncapi.ViewModel
 
         public override bool Equals(object obj)
         {
-            return obj.GetType().Equals(this.GetType()) && ((EntryViewModel)obj).Id.Equals(this.Id);
+            return obj.GetType().Equals(this.GetType()) && ((ResultViewModel)obj).Id.Equals(this.Id);
         }
 
         public override int GetHashCode()

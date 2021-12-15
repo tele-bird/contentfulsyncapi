@@ -1,6 +1,10 @@
 ﻿using System;
+using System.Collections.Generic;
 using System.Collections.ObjectModel;
+using System.Linq;
 using contenfulsyncapi.Dto.DB;
+using contenfulsyncapi.Model;
+using contenfulsyncapi.Util;
 using Contentful.Core.Models;
 
 namespace contenfulsyncapi.ViewModel
@@ -39,9 +43,34 @@ namespace contenfulsyncapi.ViewModel
             }
         }
 
+        private ContentfulApi mContentfulApi;
+        public ContentfulApi ContentfulApi
+        {
+            get
+            {
+                return mContentfulApi;
+            }
+            set
+            {
+                base.SetProperty<ContentfulApi>(ref mContentfulApi, value, "ContentfulApi");
+                ContentfulApiName = value.ToString().SplitCamelCase();
+            }
+        }
+
+        private string mContentfulApiName;
+        public string ContentfulApiName
+        {
+            get { return mContentfulApiName; }
+            set
+            {
+                base.SetProperty<string>(ref mContentfulApiName, value, "ContentfulApiName");
+            }
+        }
+
         public MainPageViewModel()
         {
             ContentTypes = new ObservableCollection<ContentTypeViewModel>();
+            ContentfulApi = ContentfulApi.SyncAPI;
         }
     }
 }

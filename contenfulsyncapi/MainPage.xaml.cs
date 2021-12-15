@@ -8,6 +8,7 @@ using System.Collections.Generic;
 using contenfulsyncapi.ViewModel;
 using Xamarin.Forms;
 using Contentful.Core.Models;
+using contenfulsyncapi.Model;
 
 namespace contenfulsyncapi
 {
@@ -24,7 +25,7 @@ namespace contenfulsyncapi
             InitializeComponent();
         }
 
-        async void btn_InitializeService_Clicked(System.Object sender, System.EventArgs e)
+        async void btn_InitializeClient_Clicked(System.Object sender, System.EventArgs e)
         {
             try
             {
@@ -34,7 +35,17 @@ namespace contenfulsyncapi
                 }
                 ContentfulClient client = new ContentfulClient(ViewModel.SpaceId, ViewModel.AccessToken, ViewModel.Environment);
                 IEnumerable<ContentType> contentTypes = await client.RequestContentTypesNET();
-                await Navigation.PushAsync(new SelectFiltersPage(client, contentTypes));
+                ContentPage nextPage = null;
+                if (ViewModel.ContentfulApi.Equals(ContentfulApi.SyncAPI))
+                {
+                    nextPage = new SelectFiltersPage(client, contentTypes);
+                }
+                else
+                {
+                    throw new Exception("Sorry, GraphQL isn't plugged in yet.");
+                    //nextPage = new SomeOtherPage(client, contentTypes);
+                }
+                await Navigation.PushAsync(nextPage);
             }
             catch (Exception exc)
             {
