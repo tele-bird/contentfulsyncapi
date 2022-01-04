@@ -32,30 +32,7 @@ namespace contenfulsyncapi.iOS
         public override bool FinishedLaunching(UIApplication application, NSDictionary launchOptions)
         {
             global::Xamarin.Forms.Forms.Init();
-            string spaceId = null;
-            string accessToken = null;
-            string environment = null;
-            string keyString = "-app-arg=";
-            foreach(string arg in NSProcessInfo.ProcessInfo.Arguments)
-            {
-                if(arg.StartsWith(keyString))
-                {
-                    string stringValue = arg.Substring(keyString.Length);
-                    if (null == spaceId)
-                    {
-                        spaceId = stringValue;
-                    }
-                    else if(null == accessToken)
-                    {
-                        accessToken = stringValue;
-                    }
-                    else if(null == environment)
-                    {
-                        environment = stringValue;
-                    }
-                }
-            }
-            LoadApplication(new App(spaceId, accessToken, environment));
+            LoadApplication(new App());
             return base.FinishedLaunching(application, launchOptions);
         }
     }

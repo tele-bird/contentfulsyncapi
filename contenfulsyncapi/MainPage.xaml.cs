@@ -9,6 +9,7 @@ using contenfulsyncapi.ViewModel;
 using Xamarin.Forms;
 using Contentful.Core.Models;
 using contenfulsyncapi.Model;
+using MonkeyCache.FileStore;
 
 namespace contenfulsyncapi
 {
@@ -16,12 +17,13 @@ namespace contenfulsyncapi
     {
         private MainPageViewModel ViewModel => (MainPageViewModel)BindingContext;
 
-        public MainPage(string spaceId, string accessToken, string environment)
+        public MainPage()
         {
             BindingContext = new MainPageViewModel();
-            ViewModel.SpaceId = spaceId;
-            ViewModel.AccessToken = accessToken;
-            ViewModel.Environment = environment;
+            var appSettings = App.AppSettings;
+            ViewModel.SpaceId = appSettings?.SpaceId;
+            ViewModel.AccessToken = appSettings?.AccessToken;
+            ViewModel.Environment = appSettings?.Environment;
             InitializeComponent();
         }
 
@@ -35,6 +37,12 @@ namespace contenfulsyncapi
                 }
                 ContentfulClient client = new ContentfulClient(ViewModel.SpaceId, ViewModel.AccessToken, ViewModel.Environment);
                 IEnumerable<ContentType> contentTypes = await client.RequestContentTypesNET();
+                App.AppSettings = new ContentfulAppSettings
+                {
+                    AccessToken = ViewModel.AccessToken,
+                    Environment = ViewModel.Environment,
+                    SpaceId = ViewModel.SpaceId
+                };
                 ContentPage nextPage = null;
                 if (ViewModel.ContentfulApi.Equals(ContentfulApi.SyncAPI))
                 {
