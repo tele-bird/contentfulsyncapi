@@ -24,7 +24,7 @@ namespace contenfulsyncapi
             try
             {
                 App.Reset();
-                SyncResult syncResult = await mClient.RequestInitialSyncNET(picker_syncType.SelectedItem, ViewModel.SelectedContentType.ContentType, ViewModel.Recursive);
+                SyncResult syncResult = await mClient.RequestInitialSyncNET(SyncType.All, null, true);
                 App.SyncEntries.Update(syncResult);
                 await Navigation.PushAsync(new ResultsListPage(mClient, App.SyncEntries));
             }
@@ -32,6 +32,12 @@ namespace contenfulsyncapi
             {
                 await DisplayAlert(exc.GetType().Name, exc.Message, "OK");
             }
+        }
+
+        void lv_ContentTypes_ItemTapped(System.Object sender, Xamarin.Forms.ItemTappedEventArgs e)
+        {
+            ContentTypeViewModel selectedItem = (ContentTypeViewModel)e.Item;
+            selectedItem.IsSelected = !selectedItem.IsSelected;
         }
     }
 }

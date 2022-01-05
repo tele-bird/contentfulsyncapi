@@ -1,13 +1,24 @@
 ﻿using System;
 using Contentful.Core.Models;
+using Xamarin.Forms;
 
 namespace contenfulsyncapi.ViewModel
 {
-    public class ContentTypeViewModel
+    public class ContentTypeViewModel : BaseViewModel
     {
-        public static ContentTypeViewModel ALL_CONTENT_TYPES = new ContentTypeViewModel("All");
+        private const string ALL_NAME = "All";
 
         public string Name { get; set; }
+
+        private bool mIsSelected;
+        public bool IsSelected
+        {
+            get { return mIsSelected; }
+            set
+            {
+                base.SetProperty<bool>(ref mIsSelected, value, "IsSelected");
+            }
+        }
 
         public ContentType ContentType { get; set; }
 
@@ -22,9 +33,21 @@ namespace contenfulsyncapi.ViewModel
             Name = name;
         }
 
+        public static ContentTypeViewModel ConstructInstanceAll()
+        {
+            return new ContentTypeViewModel(ALL_NAME);
+        }
+
+        public bool IsAll()
+        {
+            return Name.Equals(ALL_NAME);
+        }
+
         public override bool Equals(object obj)
         {
-            return obj.GetType().Equals(this.GetType()) && ((ContentTypeViewModel)obj).Name.Equals(this.Name);
+            return (null != obj)
+                && obj.GetType().Equals(this.GetType())
+                && ((ContentTypeViewModel)obj).Name.Equals(this.Name);
         }
 
         public override int GetHashCode()

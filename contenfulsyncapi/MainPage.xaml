@@ -1,15 +1,9 @@
 ﻿<?xml version="1.0" encoding="utf-8" ?>
 <ContentPage xmlns="http://xamarin.com/schemas/2014/forms"
              xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
-             xmlns:local="clr-namespace:contenfulsyncapi.Util"
              x:Class="contenfulsyncapi.MainPage"
              NavigationPage.HasNavigationBar="True"
              Title="Contentful APIs Demo">
-    <ContentPage.Resources>
-        <ResourceDictionary>
-            <local:BoolToContentfulApiConverter x:Key="cac"/>
-        </ResourceDictionary>
-    </ContentPage.Resources>
     <StackLayout Orientation="Vertical" Padding="10, 10, 10, 10">
         <Label Text="Space ID"/>
         <Entry x:Name="entry_space" Text="{Binding SpaceId}"/>
@@ -17,11 +11,6 @@
         <Entry x:Name="entry_accessToken" Text="{Binding AccessToken}"/>
         <Label Text="Environment"/>
         <Entry x:Name="entry_environment" Text="{Binding Environment}"/>
-        <Label Text="API"/>
-        <StackLayout Orientation="Horizontal" Padding="0, 0, 0, 0">
-            <Switch x:Name="switch_api" IsToggled="{Binding ContentfulApi, Converter={StaticResource cac}}" HorizontalOptions="Start"/>
-            <Label x:Name="label_api" Text="{Binding ContentfulApiName}" TextColor="Black"/>
-        </StackLayout>
         <Button x:Name="btn_InitializeClient" Clicked="btn_InitializeClient_Clicked" Text="Initialize Client"/>
     </StackLayout>
 

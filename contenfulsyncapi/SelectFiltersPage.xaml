@@ -2,21 +2,46 @@
 <ContentPage
     xmlns="http://xamarin.com/schemas/2014/forms"
     xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
-    xmlns:controls="clr-namespace:contenfulsyncapi.Control"
-    xmlns:enums="clr-namespace:Contentful.Core.Models;assembly=Contentful.Core"
+    xmlns:local="clr-namespace:contenfulsyncapi.ViewModel"
     x:Class="contenfulsyncapi.SelectFiltersPage"
     NavigationPage.HasNavigationBar="True"
-    Title="Sync API: Filter Selection">
+    Title="Content Type Selection">
+    <ContentPage.Resources>
+        <ResourceDictionary>
+            <DataTemplate x:Key="selectedAppearanceTemplate">
+                <ViewCell>
+                    <StackLayout Orientation="Horizontal" Padding="0" Spacing="20">
+                        <Switch IsToggled="{Binding IsSelected}"/>
+                        <Label Text="√" TextColor="Black" FontAttributes="Bold"/>
+                        <Label Text="{Binding Name}" TextColor="Black" FontAttributes="Bold"/>
+                    </StackLayout>
+                </ViewCell>
+            </DataTemplate>
+            <DataTemplate x:Key="deselectedAppearanceTemplate">
+                <ViewCell>
+                    <StackLayout Orientation="Horizontal" Padding="0" Spacing="20">
+                        <Switch IsToggled="{Binding IsSelected}"/>
+                        <Label Text="√" TextColor="Transparent" FontAttributes="Bold"/>
+                        <Label Text="{Binding Name}" TextColor="Black" FontAttributes="None"/>
+                    </StackLayout>
+                </ViewCell>
+            </DataTemplate>
+            <local:ListViewItemDataTemplateSelector
+                x:Key="listViewItemDataTemplateSelector"
+                SelectedAppearanceTemplate="{StaticResource selectedAppearanceTemplate}"
+                DeselectedAppearanceTemplate="{StaticResource deselectedAppearanceTemplate}"/>
+        </ResourceDictionary>
+    </ContentPage.Resources>
     <ContentPage.Content>
         <StackLayout Orientation="Vertical" Padding="10, 10, 10, 10">
-            <StackLayout Orientation="Vertical">
-                <Label Text="Sync Type"/>
-                <controls:EnumBindablePicker x:Name="picker_syncType" x:TypeArguments="enums:SyncType" Title="Sync Type" SelectedIndex="{Binding SelectedSyncTypeIndex}"/>
-                <Label Text="Content Type"/>
-                <Picker x:Name="picker_contentType" Title="Content Type" ItemsSource="{Binding ContentTypes}" ItemDisplayBinding="{Binding Name}" SelectedItem="{Binding SelectedContentType}"/>
-                <Label Text="Recursive"/>
-                <Switch x:Name="switch_Recursive" IsToggled="{Binding Recursive}" HorizontalOptions="Start"/>
-            </StackLayout>
+            <ListView
+                x:Name="lv_ContentTypes"
+                ItemsSource="{Binding ContentTypes}"
+                SelectionMode="None"
+                ItemTapped="lv_ContentTypes_ItemTapped"
+                SeparatorVisibility="None"
+                ItemTemplate="{StaticResource listViewItemDataTemplateSelector}">
+            </ListView>
             <Button x:Name="btn_RequestContent" Clicked="btn_RequestContent_Clicked" Text="Request Initial Content"/>
         </StackLayout>
     </ContentPage.Content>

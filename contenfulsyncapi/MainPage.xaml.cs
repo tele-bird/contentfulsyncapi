@@ -43,17 +43,7 @@ namespace contenfulsyncapi
                     Environment = ViewModel.Environment,
                     SpaceId = ViewModel.SpaceId
                 };
-                ContentPage nextPage = null;
-                if (ViewModel.ContentfulApi.Equals(ContentfulApi.SyncAPI))
-                {
-                    nextPage = new SelectFiltersPage(client, contentTypes);
-                }
-                else
-                {
-                    throw new Exception("Sorry, GraphQL isn't plugged in yet.");
-                    //nextPage = new SomeOtherPage(client, contentTypes);
-                }
-                await Navigation.PushAsync(nextPage);
+                await Navigation.PushAsync(new SelectFiltersPage(client, contentTypes));
             }
             catch (Exception exc)
             {

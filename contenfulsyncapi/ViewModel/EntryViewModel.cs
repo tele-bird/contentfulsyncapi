@@ -49,7 +49,9 @@ namespace contenfulsyncapi.ViewModel
 
         public override bool Equals(object obj)
         {
-            return obj.GetType().Equals(this.GetType()) && ((ResultViewModel)obj).Id.Equals(this.Id);
+            return (null != obj)
+                && obj.GetType().Equals(this.GetType())
+                && ((ResultViewModel)obj).Id.Equals(this.Id);
         }
 
         public override int GetHashCode()

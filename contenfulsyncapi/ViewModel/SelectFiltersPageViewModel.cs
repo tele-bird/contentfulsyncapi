@@ -18,11 +18,7 @@ namespace contenfulsyncapi.ViewModel
             }
         }
 
-        public bool Recursive { get; set; }
-
         public ObservableCollection<ContentTypeViewModel> ContentTypes { get; set; }
-
-        public ContentTypeViewModel SelectedContentType { get; set; }
 
         public SelectFiltersPageViewModel(IEnumerable<ContentType> contentTypes)
         {
@@ -30,10 +26,28 @@ namespace contenfulsyncapi.ViewModel
             ContentTypes = new ObservableCollection<ContentTypeViewModel>();
             foreach (ContentType contentType in contentTypes)
             {
-                ContentTypes.Add(new ContentTypeViewModel(contentType));
+                ContentTypeViewModel contentTypeViewModel = new ContentTypeViewModel(contentType);
+                contentTypeViewModel.PropertyChanged += ContentTypeViewModel_PropertyChanged;
+                ContentTypes.Add(contentTypeViewModel);
             }
-            ContentTypes.Insert(0, ContentTypeViewModel.ALL_CONTENT_TYPES);
-            SelectedContentType = ContentTypeViewModel.ALL_CONTENT_TYPES;
+            ContentTypeViewModel contentTypeViewModelAll = ContentTypeViewModel.ConstructInstanceAll();
+            contentTypeViewModelAll.PropertyChanged += ContentTypeViewModel_PropertyChanged;
+            ContentTypes.Insert(0, contentTypeViewModelAll);
+        }
+
+        private void ContentTypeViewModel_PropertyChanged(object sender, System.ComponentModel.PropertyChangedEventArgs e)
+        {
+            if(e.PropertyName.Equals("IsSelected"))
+            {
+                ContentTypeViewModel contentTypeViewModel = (ContentTypeViewModel)sender;
+                if (contentTypeViewModel.IsAll())
+                {
+                    foreach (var contentType in ContentTypes)
+                    {
+                        contentType.IsSelected = contentTypeViewModel.IsSelected;
+                    }
+                }
+            }
         }
     }
 }

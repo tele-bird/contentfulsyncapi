@@ -9,7 +9,8 @@ namespace contenfulsyncapi
 
         public override bool Equals(object obj)
         {
-            return obj.GetType().Equals(this.GetType())
+            return (null != obj)
+                && obj.GetType().Equals(this.GetType())
                 && ((ContentfulAppSettings)obj).SpaceId.Equals(this.SpaceId)
                 && ((ContentfulAppSettings)obj).AccessToken.Equals(this.AccessToken)
                 && ((ContentfulAppSettings)obj).Environment.Equals(this.Environment);
