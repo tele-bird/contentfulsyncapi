@@ -1,15 +1,8 @@
 ﻿using System;
 using System.Collections.Generic;
-//using System.ComponentModel;
-//using System.Linq;
-//using System.Net.Http;
-//using System.Text;
-//using System.Threading.Tasks;
 using contenfulsyncapi.ViewModel;
-using Xamarin.Forms;
 using Contentful.Core.Models;
-using contenfulsyncapi.Model;
-using MonkeyCache.FileStore;
+using Xamarin.Forms;
 
 namespace contenfulsyncapi
 {
@@ -27,7 +20,7 @@ namespace contenfulsyncapi
             InitializeComponent();
         }
 
-        async void btn_InitializeClient_Clicked(System.Object sender, System.EventArgs e)
+        async void btn_Next_Clicked(System.Object sender, System.EventArgs e)
         {
             try
             {
@@ -41,14 +34,18 @@ namespace contenfulsyncapi
                 {
                     AccessToken = ViewModel.AccessToken,
                     Environment = ViewModel.Environment,
-                    SpaceId = ViewModel.SpaceId
+                    SpaceId = ViewModel.SpaceId,
                 };
-                await Navigation.PushAsync(new SelectFiltersPage(client, contentTypes));
+                await Navigation.PushAsync(new SelectFiltersPage(client, contentTypes, App.InitialContentSettings));
             }
             catch (Exception exc)
             {
                 await DisplayAlert(exc.GetType().Name, exc.Message, "OK");
             }
+        }
+
+        void btn_SaveSettings_Clicked(System.Object sender, System.EventArgs e)
+        {
         }
     }
 }

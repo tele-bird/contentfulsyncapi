@@ -6,12 +6,12 @@
              Title="Contentful APIs Demo">
     <StackLayout Orientation="Vertical" Padding="10, 10, 10, 10">
         <Label Text="Space ID"/>
-        <Entry x:Name="entry_space" Text="{Binding SpaceId}"/>
+        <Entry Text="{Binding SpaceId}"/>
         <Label Text="Access Token"/>
-        <Entry x:Name="entry_accessToken" Text="{Binding AccessToken}"/>
+        <Entry Text="{Binding AccessToken}"/>
         <Label Text="Environment"/>
-        <Entry x:Name="entry_environment" Text="{Binding Environment}"/>
-        <Button x:Name="btn_InitializeClient" Clicked="btn_InitializeClient_Clicked" Text="Initialize Client"/>
+        <Entry Text="{Binding Environment}"/>
+        <Button x:Name="btn_Next" Clicked="btn_Next_Clicked" Text="Next"/>
     </StackLayout>
 
 </ContentPage>

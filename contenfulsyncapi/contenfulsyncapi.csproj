@@ -25,7 +25,6 @@
     <None Remove="ViewModel\" />
     <None Remove="contentful.csharp" />
     <None Remove="Control\" />
-    <None Remove="Model\" />
     <None Remove="Util\" />
     <None Remove="MonkeyCache.FileStore" />
   </ItemGroup>
@@ -34,7 +33,6 @@
     <Folder Include="Dto\DB\" />
     <Folder Include="ViewModel\" />
     <Folder Include="Control\" />
-    <Folder Include="Model\" />
     <Folder Include="Util\" />
   </ItemGroup>
 </Project>

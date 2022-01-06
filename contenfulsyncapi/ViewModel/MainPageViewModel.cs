@@ -1,11 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Collections.ObjectModel;
-using System.Linq;
-using contenfulsyncapi.Dto.DB;
-using contenfulsyncapi.Model;
-using contenfulsyncapi.Util;
-using Contentful.Core.Models;
+﻿using System.Collections.ObjectModel;
 
 namespace contenfulsyncapi.ViewModel
 {

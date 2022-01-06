@@ -55,12 +55,18 @@ namespace contenfulsyncapi
         //    return EntriesResponse.FromJson(response);
         //}
 
-        public async Task<IEnumerable<Contentful.Core.Models.ContentType>> RequestContentTypesNET()
+        public async Task<IEnumerable<ContentType>> RequestContentTypesNET()
         {
             using (var httpClient = new HttpClient())
             {
                 var client = new Contentful.Core.ContentfulClient(httpClient, options);
-                return await client.GetContentTypes();
+                IEnumerable<ContentType> contentTypes = await client.GetContentTypes();
+                List<ContentType> myContentTypes = new List<ContentType>();
+                foreach(ContentType contentType in contentTypes)
+                {
+                    myContentTypes.Add(contentType);
+                }
+                return myContentTypes;
             }
         }
 

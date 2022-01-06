@@ -1,13 +1,22 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
-using contenfulsyncapi.Dto.DB;
 using Contentful.Core.Models;
 
 namespace contenfulsyncapi.ViewModel
 {
     public class SelectFiltersPageViewModel : BaseViewModel
     {
+        private string mPageTitle;
+        public string PageTitle
+        {
+            get { return mPageTitle; }
+            set
+            {
+                base.SetProperty<string>(ref mPageTitle, value, "PageTitle");
+            }
+        }
+
         private SyncType mSelectedSyncTypeIndex;
         public SyncType SelectedSyncTypeIndex
         {
@@ -18,21 +27,43 @@ namespace contenfulsyncapi.ViewModel
             }
         }
 
-        public ObservableCollection<ContentTypeViewModel> ContentTypes { get; set; }
+        public ObservableCollection<ContentTypeViewModel> ContentTypeViewModels { get; set; }
 
-        public SelectFiltersPageViewModel(IEnumerable<ContentType> contentTypes)
+        private int mExpirationHours;
+        public int ExpirationHours
+        {
+            get { return mExpirationHours; }
+            set
+            {
+                base.SetProperty<int>(ref mExpirationHours, value, "ExpirationHours");
+            }
+        }
+
+        public SelectFiltersPageViewModel(IEnumerable<ContentType> allContentTypes, ContentfulInitialContentSettings contentfulInitialContentSettings)
         {
             SelectedSyncTypeIndex = 0;
-            ContentTypes = new ObservableCollection<ContentTypeViewModel>();
-            foreach (ContentType contentType in contentTypes)
+            ContentTypeViewModels = new ObservableCollection<ContentTypeViewModel>();
+            bool allSelected = true;
+            foreach (ContentType contentType in allContentTypes)
             {
                 ContentTypeViewModel contentTypeViewModel = new ContentTypeViewModel(contentType);
+                if(null != contentfulInitialContentSettings)
+                {
+                    contentTypeViewModel.IsSelected = contentfulInitialContentSettings.ContentTypeIds.Contains(contentTypeViewModel.ContentType.SystemProperties.Id);
+                }
                 contentTypeViewModel.PropertyChanged += ContentTypeViewModel_PropertyChanged;
-                ContentTypes.Add(contentTypeViewModel);
+                allSelected = allSelected && contentTypeViewModel.IsSelected;
+                ContentTypeViewModels.Add(contentTypeViewModel);
             }
             ContentTypeViewModel contentTypeViewModelAll = ContentTypeViewModel.ConstructInstanceAll();
+            contentTypeViewModelAll.IsSelected = allSelected;
             contentTypeViewModelAll.PropertyChanged += ContentTypeViewModel_PropertyChanged;
-            ContentTypes.Insert(0, contentTypeViewModelAll);
+            ContentTypeViewModels.Insert(0, contentTypeViewModelAll);
+            this.RecalculatePageTitle();
+            if (null != contentfulInitialContentSettings)
+            {
+                ExpirationHours = contentfulInitialContentSettings.ExpirationHours;
+            }
         }
 
         private void ContentTypeViewModel_PropertyChanged(object sender, System.ComponentModel.PropertyChangedEventArgs e)
@@ -42,12 +73,42 @@ namespace contenfulsyncapi.ViewModel
                 ContentTypeViewModel contentTypeViewModel = (ContentTypeViewModel)sender;
                 if (contentTypeViewModel.IsAll())
                 {
-                    foreach (var contentType in ContentTypes)
+                    foreach (var contentType in ContentTypeViewModels)
                     {
                         contentType.IsSelected = contentTypeViewModel.IsSelected;
                     }
                 }
+                else
+                {
+                    this.RecalculatePageTitle();
+                }
             }
+        }
+
+        private void RecalculatePageTitle()
+        {
+            int num = 0;
+            foreach (ContentTypeViewModel contentTypeViewModel in ContentTypeViewModels)
+            {
+                if (contentTypeViewModel.IsSelected)
+                {
+                    ++num;
+                }
+            }
+            PageTitle = $"Content Types for sync ({num})";
+        }
+
+        public List<ContentType> GetSelectedContentTypes()
+        {
+            List<ContentType> contentTypes = new List<ContentType>(ContentTypeViewModels.Count - 1);
+            foreach(ContentTypeViewModel contentTypeViewModel in ContentTypeViewModels)
+            {
+                if(!contentTypeViewModel.IsAll() && contentTypeViewModel.IsSelected)
+                {
+                    contentTypes.Add(contentTypeViewModel.ContentType);
+                }
+            }
+            return contentTypes;
         }
     }
 }

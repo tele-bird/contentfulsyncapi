@@ -59,6 +59,30 @@ namespace contenfulsyncapi
             }
         }
 
+        private static ContentfulInitialContentSettings mInitialContentSettings;
+        public static ContentfulInitialContentSettings InitialContentSettings
+        {
+            get
+            {
+                if(null == mInitialContentSettings)
+                {
+                    mInitialContentSettings = Barrel.Current.Get<ContentfulInitialContentSettings>("initialContentSettings");
+                }
+                return mInitialContentSettings;
+            }
+        }
+
+        public static void SetInitialContentSettings(IEnumerable<ContentType> contentTypes, int expirationHours)
+        {
+            mInitialContentSettings = new ContentfulInitialContentSettings();
+            foreach(ContentType contentType in contentTypes)
+            {
+                mInitialContentSettings.ContentTypeIds.Add(contentType.SystemProperties.Id);
+            }
+            mInitialContentSettings.ExpirationHours = expirationHours;
+            Barrel.Current.Add<ContentfulInitialContentSettings>("initialContentSettings", mInitialContentSettings, TimeSpan.MaxValue);
+        }
+
         public static void Reset()
         {
             SyncEntries = new SynchronizedEntries();

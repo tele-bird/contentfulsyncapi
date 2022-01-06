@@ -12,10 +12,10 @@ namespace contenfulsyncapi
 
         private ContentfulClient mClient = null;
 
-        public SelectFiltersPage(ContentfulClient client, IEnumerable<ContentType> contentTypes)
+        public SelectFiltersPage(ContentfulClient client, IEnumerable<ContentType> contentTypes, ContentfulInitialContentSettings contentfulInitialContentSettings = null)
         {
             mClient = client;
-            BindingContext = new SelectFiltersPageViewModel(contentTypes);
+            BindingContext = new SelectFiltersPageViewModel(contentTypes, contentfulInitialContentSettings);
             InitializeComponent();
         }
 
@@ -23,8 +23,14 @@ namespace contenfulsyncapi
         {
             try
             {
-                App.Reset();
+                List<ContentType> contentTypes = ViewModel.GetSelectedContentTypes();
+                if (0 == contentTypes.Count)
+                {
+                    throw new Exception("Select at least one content type for the initial request.");
+                }
                 SyncResult syncResult = await mClient.RequestInitialSyncNET(SyncType.All, null, true);
+                App.SetInitialContentSettings(contentTypes, ViewModel.ExpirationHours);
+                App.Reset();
                 App.SyncEntries.Update(syncResult);
                 await Navigation.PushAsync(new ResultsListPage(mClient, App.SyncEntries));
             }
