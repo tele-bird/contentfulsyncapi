@@ -27,6 +27,8 @@
     <None Remove="Control\" />
     <None Remove="Util\" />
     <None Remove="MonkeyCache.FileStore" />
+    <None Remove="Service\" />
+    <None Remove="Model\" />
   </ItemGroup>
   <ItemGroup>
     <Folder Include="Dto\" />
@@ -34,5 +36,7 @@
     <Folder Include="ViewModel\" />
     <Folder Include="Control\" />
     <Folder Include="Util\" />
+    <Folder Include="Service\" />
+    <Folder Include="Model\" />
   </ItemGroup>
 </Project>

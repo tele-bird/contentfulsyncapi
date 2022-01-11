@@ -1,5 +1,4 @@
-﻿using System;
-namespace contenfulsyncapi
+﻿namespace contenfulsyncapi.Model
 {
     public class ContentfulAppSettings
     {

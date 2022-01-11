@@ -1,12 +1,10 @@
-﻿using System;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using System.Net.Http;
-using System.Text;
 using System.Threading.Tasks;
 using Contentful.Core.Configuration;
 using Contentful.Core.Models;
 
-namespace contenfulsyncapi
+namespace contenfulsyncapi.Service
 {
     public class ContentfulClient
     {
@@ -70,7 +68,7 @@ namespace contenfulsyncapi
             }
         }
 
-        public async Task<SyncResult> RequestInitialSyncNET(SyncType syncType, Contentful.Core.Models.ContentType contentType, bool recursive)
+        public async Task<SyncResult> RequestInitialSyncNET(SyncType syncType, string contentTypeId, bool recursive)
         {
             //if((null != contentType) && (syncType != SyncType.Entry))
             //{
@@ -81,11 +79,11 @@ namespace contenfulsyncapi
                 var client = new Contentful.Core.ContentfulClient(httpClient, options);
                 if(recursive)
                 {
-                    return await client.SyncInitialRecursive(syncType, contentType?.SystemProperties.Id);
+                    return await client.SyncInitialRecursive(syncType, contentTypeId);
                 }
                 else
                 {
-                    return await client.SyncInitial(syncType, contentType?.SystemProperties.Id);
+                    return await client.SyncInitial(syncType, contentTypeId);
                 }
             }
         }

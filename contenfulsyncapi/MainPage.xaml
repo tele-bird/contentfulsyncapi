@@ -3,7 +3,7 @@
              xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
              x:Class="contenfulsyncapi.MainPage"
              NavigationPage.HasNavigationBar="True"
-             Title="Contentful APIs Demo">
+             Title="Client Connection Parameters">
     <StackLayout Orientation="Vertical" Padding="10, 10, 10, 10">
         <Label Text="Space ID"/>
         <Entry Text="{Binding SpaceId}"/>

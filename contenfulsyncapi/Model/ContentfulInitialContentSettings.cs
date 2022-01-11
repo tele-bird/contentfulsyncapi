@@ -1,14 +1,12 @@
-﻿using System;
-using System.Collections.Generic;
-using Contentful.Core.Models;
+﻿using System.Collections.Generic;
 
-namespace contenfulsyncapi
+namespace contenfulsyncapi.Model
 {
     public class ContentfulInitialContentSettings
     {
         public List<string> ContentTypeIds { get; set; }
 
-        public int ExpirationHours { get; set; }
+        public int ExpirationMinutes { get; set; }
 
         public ContentfulInitialContentSettings()
         {

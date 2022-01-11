@@ -1,5 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
+using contenfulsyncapi.Model;
+using contenfulsyncapi.Service;
 using contenfulsyncapi.ViewModel;
 using Contentful.Core.Models;
 using Xamarin.Forms;
@@ -10,16 +12,16 @@ namespace contenfulsyncapi
     {
         private SelectFiltersPageViewModel ViewModel => (SelectFiltersPageViewModel)BindingContext;
 
-        private ContentfulClient mClient = null;
+        private CachingContentService mCachingContentService = null;
 
-        public SelectFiltersPage(ContentfulClient client, IEnumerable<ContentType> contentTypes, ContentfulInitialContentSettings contentfulInitialContentSettings = null)
+        public SelectFiltersPage(CachingContentService cachingContentService, IEnumerable<ContentType> contentTypes)
         {
-            mClient = client;
-            BindingContext = new SelectFiltersPageViewModel(contentTypes, contentfulInitialContentSettings);
+            mCachingContentService = cachingContentService;
+            BindingContext = new SelectFiltersPageViewModel(contentTypes, cachingContentService.InitialContentSettings);
             InitializeComponent();
         }
 
-        async void btn_RequestContent_Clicked(System.Object sender, System.EventArgs e)
+        async void btn_Next_Clicked(System.Object sender, System.EventArgs e)
         {
             try
             {
@@ -28,11 +30,14 @@ namespace contenfulsyncapi
                 {
                     throw new Exception("Select at least one content type for the initial request.");
                 }
-                SyncResult syncResult = await mClient.RequestInitialSyncNET(SyncType.All, null, true);
-                App.SetInitialContentSettings(contentTypes, ViewModel.ExpirationHours);
-                App.Reset();
-                App.SyncEntries.Update(syncResult);
-                await Navigation.PushAsync(new ResultsListPage(mClient, App.SyncEntries));
+                mCachingContentService.SetInitialContentSettings(contentTypes, ViewModel.ExpirationMinutes);
+                await Navigation.PushAsync(new TabbedResultsPage(mCachingContentService, contentTypes));
+
+                //SyncResult syncResult = await mClient.RequestInitialSyncNET(SyncType.All, null, true);
+                //App.SetInitialContentSettings(contentTypes, ViewModel.ExpirationHours);
+                //App.Reset();
+                //App.SyncEntries.Update(syncResult);
+                //await Navigation.PushAsync(new ResultsListPage(mClient, App.SyncEntries));
             }
             catch (Exception exc)
             {

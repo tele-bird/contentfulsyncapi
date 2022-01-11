@@ -13,25 +13,7 @@ namespace contenfulsyncapi.ViewModel
             }
         }
 
-        private bool mIsLoadNextPageEnabled;
-        public bool IsLoadNextPageButtonEnabled
-        {
-            get { return mIsLoadNextPageEnabled; }
-            protected set
-            {
-                base.SetProperty<bool>(ref mIsLoadNextPageEnabled, value, "IsLoadNextPageButtonEnabled", null);
-            }
-        }
-
-        private bool mIsUpdateResultsButtonEnabled;
-        public bool IsUpdateResultsButtonEnabled
-        {
-            get { return mIsUpdateResultsButtonEnabled; }
-            protected set
-            {
-                base.SetProperty<bool>(ref mIsUpdateResultsButtonEnabled, value, "IsUpdateResultsButtonEnabled", null);
-            }
-        }
+        public bool Updated { get; internal set; }
 
         private Nullable<DateTime> mPreviousUpdated;
         public Nullable<DateTime> PreviousUpdated
@@ -76,6 +58,30 @@ namespace contenfulsyncapi.ViewModel
                 base.SetProperty<string>(ref mLastUpdatedText, value, "LastUpdatedText", null);
             }
         }
+
+        private Nullable<DateTime> mExpires;
+        public Nullable<DateTime> Expires
+        {
+            get { return mExpires; }
+            protected set
+            {
+                base.SetProperty<Nullable<DateTime>>(ref mExpires, value, "Expires");
+                string valueString = value.HasValue ? value.Value.ToString() : "(never)";
+                ExpiresText = $"Expires: {valueString}";
+            }
+        }
+
+        private string mExpiresText;
+        public string ExpiresText
+        {
+            get { return mExpiresText; }
+            protected set
+            {
+                base.SetProperty<string>(ref mExpiresText, value, "ExpiresText", null);
+            }
+        }
+
+        public int SyncVersion { get; set; }
 
         protected SyncedDataViewModel()
         {

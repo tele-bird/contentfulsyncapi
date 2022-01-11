@@ -7,29 +7,31 @@
     Title="{Binding PageTitle}">
     <ContentPage.Content>
         <StackLayout Orientation="Vertical" Padding="10, 10, 10, 10">
-            <ListView
-                x:Name="lv_ContentTypes"
-                ItemsSource="{Binding ContentTypeViewModels}"
-                SelectionMode="None"
-                ItemTapped="lv_ContentTypes_ItemTapped"
-                SeparatorVisibility="None">
-                <ListView.ItemTemplate>
-                    <DataTemplate>
-                        <ViewCell>
-                            <StackLayout Orientation="Horizontal" Padding="0" Spacing="20">
-                                <Switch IsToggled="{Binding IsSelected}"/>
-                                <Label Text="{Binding Name}" TextColor="Black" FontAttributes="None"/>
-                            </StackLayout>
-                        </ViewCell>
-                    </DataTemplate>
-                </ListView.ItemTemplate>
-            </ListView>
-            <Label Text="Cache Expires In (hours)"/>
+            <RefreshView IsRefreshing="{Binding IsRefreshing, Mode=OneWay}" Command="{Binding RefreshCommand}">
+                <ListView
+                    x:Name="lv_ContentTypes"
+                    ItemsSource="{Binding ContentTypeViewModels}"
+                    SelectionMode="None"
+                    ItemTapped="lv_ContentTypes_ItemTapped"
+                    SeparatorVisibility="None">
+                    <ListView.ItemTemplate>
+                        <DataTemplate>
+                            <ViewCell>
+                                <StackLayout Orientation="Horizontal" Padding="0" Spacing="20">
+                                    <Switch IsToggled="{Binding IsSelected}"/>
+                                    <Label Text="{Binding Name}" TextColor="Black" FontAttributes="None"/>
+                                </StackLayout>
+                            </ViewCell>
+                        </DataTemplate>
+                    </ListView.ItemTemplate>
+                </ListView>
+            </RefreshView>
+            <Label Text="Cache Expires In (minutes)"/>
             <StackLayout Orientation="Horizontal">
-                <Entry Text="{Binding ExpirationHours}" HorizontalOptions="StartAndExpand" Keyboard="Numeric" IsEnabled="False" />
-                <Stepper Value="{Binding ExpirationHours}" HorizontalOptions="End"/>
+                <Entry Text="{Binding ExpirationMinutes}" HorizontalOptions="StartAndExpand" Keyboard="Numeric" IsEnabled="False" />
+                <Stepper Value="{Binding ExpirationMinutes}" HorizontalOptions="End"/>
             </StackLayout>
-            <Button x:Name="btn_RequestContent" Clicked="btn_RequestContent_Clicked" Text="Request Initial Content"/>
+            <Button x:Name="btn_Next" Clicked="btn_Next_Clicked" Text="Next"/>
         </StackLayout>
     </ContentPage.Content>
 </ContentPage>

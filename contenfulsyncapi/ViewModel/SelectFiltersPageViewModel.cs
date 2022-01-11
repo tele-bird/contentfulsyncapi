@@ -1,6 +1,6 @@
-﻿using System;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using System.Collections.ObjectModel;
+using contenfulsyncapi.Model;
 using Contentful.Core.Models;
 
 namespace contenfulsyncapi.ViewModel
@@ -29,13 +29,13 @@ namespace contenfulsyncapi.ViewModel
 
         public ObservableCollection<ContentTypeViewModel> ContentTypeViewModels { get; set; }
 
-        private int mExpirationHours;
-        public int ExpirationHours
+        private int mExpirationMinutes;
+        public int ExpirationMinutes
         {
-            get { return mExpirationHours; }
+            get { return mExpirationMinutes; }
             set
             {
-                base.SetProperty<int>(ref mExpirationHours, value, "ExpirationHours");
+                base.SetProperty<int>(ref mExpirationMinutes, value, "ExpirationMinutes");
             }
         }
 
@@ -62,7 +62,7 @@ namespace contenfulsyncapi.ViewModel
             this.RecalculatePageTitle();
             if (null != contentfulInitialContentSettings)
             {
-                ExpirationHours = contentfulInitialContentSettings.ExpirationHours;
+                ExpirationMinutes = contentfulInitialContentSettings.ExpirationMinutes;
             }
         }
 
@@ -95,7 +95,7 @@ namespace contenfulsyncapi.ViewModel
                     ++num;
                 }
             }
-            PageTitle = $"Content Types for sync ({num})";
+            PageTitle = $"Content Types to sync ({num})";
         }
 
         public List<ContentType> GetSelectedContentTypes()

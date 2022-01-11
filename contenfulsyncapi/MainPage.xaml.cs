@@ -1,5 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
+using contenfulsyncapi.Model;
+using contenfulsyncapi.Service;
 using contenfulsyncapi.ViewModel;
 using Contentful.Core.Models;
 using Xamarin.Forms;
@@ -10,13 +12,15 @@ namespace contenfulsyncapi
     {
         private MainPageViewModel ViewModel => (MainPageViewModel)BindingContext;
 
+        private CachingContentService mCachingContentService;
+
         public MainPage()
         {
             BindingContext = new MainPageViewModel();
-            var appSettings = App.AppSettings;
-            ViewModel.SpaceId = appSettings?.SpaceId;
-            ViewModel.AccessToken = appSettings?.AccessToken;
-            ViewModel.Environment = appSettings?.Environment;
+            mCachingContentService = new CachingContentService();
+            ViewModel.SpaceId = mCachingContentService.AppSettings?.SpaceId;
+            ViewModel.AccessToken = mCachingContentService.AppSettings?.AccessToken;
+            ViewModel.Environment = mCachingContentService.AppSettings?.Environment;
             InitializeComponent();
         }
 
@@ -28,15 +32,15 @@ namespace contenfulsyncapi
                 {
                     throw new Exception("A required parameter is missing.");
                 }
-                ContentfulClient client = new ContentfulClient(ViewModel.SpaceId, ViewModel.AccessToken, ViewModel.Environment);
-                IEnumerable<ContentType> contentTypes = await client.RequestContentTypesNET();
-                App.AppSettings = new ContentfulAppSettings
+                ContentfulClient contentfulClient = new ContentfulClient(ViewModel.SpaceId, ViewModel.AccessToken, ViewModel.Environment);
+                IEnumerable<ContentType> contentTypes = await contentfulClient.RequestContentTypesNET();
+                mCachingContentService.AppSettings = new ContentfulAppSettings
                 {
                     AccessToken = ViewModel.AccessToken,
                     Environment = ViewModel.Environment,
-                    SpaceId = ViewModel.SpaceId,
+                    SpaceId = ViewModel.SpaceId
                 };
-                await Navigation.PushAsync(new SelectFiltersPage(client, contentTypes, App.InitialContentSettings));
+                await Navigation.PushAsync(new SelectFiltersPage(mCachingContentService, contentTypes));
             }
             catch (Exception exc)
             {
