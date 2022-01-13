@@ -65,34 +65,35 @@ namespace contenfulsyncapi.Service
                 }
                 return mInitialContentSettings;
             }
-        }
-
-        public void SetInitialContentSettings(IEnumerable<ContentType> contentTypes, int expirationMinutes)
-        {
-            if(null != mInitialContentSettings)
+            set
             {
-                // clean out previous initial content, if it exists:
-                // clear old content type caches:
-                foreach (string contentTypeId in mInitialContentSettings.ContentTypeIds)
+                if (null != mInitialContentSettings)
                 {
-                    Barrel.Current.Empty(contentTypeId);
+                    // clean out previous initial content, if it exists:
+                    // clear old content type caches:
+                    foreach (string contentTypeId in mInitialContentSettings.SelectedContentTypeIds)
+                    {
+                        Barrel.Current.Empty(contentTypeId);
+                    }
+                    // clear initialContentSettings:
+                    Barrel.Current.Empty("initialContentSettings");
                 }
-                // clear initialContentSettings:
-                Barrel.Current.Empty("initialContentSettings");
-            }
 
-            // store new settings:
-            mInitialContentSettings = new ContentfulInitialContentSettings();
-            foreach (ContentType contentType in contentTypes)
-            {
-                mInitialContentSettings.ContentTypeIds.Add(contentType.SystemProperties.Id);
+                // store new settings:
+                mInitialContentSettings = value;
+                if(null != mInitialContentSettings)
+                {
+                    Barrel.Current.Add<ContentfulInitialContentSettings>("initialContentSettings", mInitialContentSettings, TimeSpan.MaxValue);
+                }
             }
-            mInitialContentSettings.ExpirationMinutes = expirationMinutes;
-            Barrel.Current.Add<ContentfulInitialContentSettings>("initialContentSettings", mInitialContentSettings, TimeSpan.MaxValue);
         }
 
         public async Task<IEnumerable<ContentType>> GetContentTypesAsync()
         {
+            if(null == mContentfulClient)
+            {
+                throw new Exception("The AppSettings must be set before invoking this method.");
+            }
             return await mContentfulClient.RequestContentTypesNET();
         }
 

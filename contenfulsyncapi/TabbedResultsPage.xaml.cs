@@ -1,4 +1,5 @@
 ﻿using System.Collections.Generic;
+using contenfulsyncapi.Dto.DB;
 using contenfulsyncapi.Service;
 using Contentful.Core.Models;
 using Xamarin.Forms;
@@ -9,12 +10,15 @@ namespace contenfulsyncapi
     [XamlCompilation(XamlCompilationOptions.Compile)]
     public partial class TabbedResultsPage : TabbedPage
     {
-        public TabbedResultsPage(CachingContentService cachingContentService, List<ContentType> contentTypes)
+        public TabbedResultsPage(CachingContentService cachingContentService)
         {
             InitializeComponent();
-            foreach(ContentType contentType in contentTypes)
+            foreach(ContentTypeDto contentTypeDto in cachingContentService.InitialContentSettings.AllContentTypeDtos)
             {
-                this.Children.Add(new ResultsTabPage(contentType, cachingContentService));
+                if(cachingContentService.InitialContentSettings.SelectedContentTypeIds.Contains(contentTypeDto.Id))
+                {
+                    this.Children.Add(new ResultsTabPage(contentTypeDto, cachingContentService));
+                }
             }
         }
     }

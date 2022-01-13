@@ -12,32 +12,47 @@ namespace contenfulsyncapi
     {
         private SelectFiltersPageViewModel ViewModel => (SelectFiltersPageViewModel)BindingContext;
 
-        private CachingContentService mCachingContentService = null;
+        private CachingContentService mCachingContentService;
 
-        public SelectFiltersPage(CachingContentService cachingContentService, IEnumerable<ContentType> contentTypes)
+        private bool mAppeared;
+
+        public SelectFiltersPage(CachingContentService cachingContentService)
         {
             mCachingContentService = cachingContentService;
-            BindingContext = new SelectFiltersPageViewModel(contentTypes, cachingContentService.InitialContentSettings);
+            BindingContext = new SelectFiltersPageViewModel(cachingContentService);
             InitializeComponent();
+        }
+
+        protected override void OnAppearing()
+        {
+            base.OnAppearing();
+
+            // do this stuff only the first time the page appears:
+            if (!mAppeared)
+            {
+                // populate the content types in the list:
+                ViewModel.ExecuteRefreshCommand(this);
+
+                // navigate to next page, if needed:
+                if (mCachingContentService.InitialContentSettings != null)
+                {
+                    NavigateToNextPage();
+                }
+                mAppeared = true;
+            }
+        }
+
+        private async void NavigateToNextPage()
+        {
+            await Navigation.PushAsync(new TabbedResultsPage(mCachingContentService));
         }
 
         async void btn_Next_Clicked(System.Object sender, System.EventArgs e)
         {
             try
             {
-                List<ContentType> contentTypes = ViewModel.GetSelectedContentTypes();
-                if (0 == contentTypes.Count)
-                {
-                    throw new Exception("Select at least one content type for the initial request.");
-                }
-                mCachingContentService.SetInitialContentSettings(contentTypes, ViewModel.ExpirationMinutes);
-                await Navigation.PushAsync(new TabbedResultsPage(mCachingContentService, contentTypes));
-
-                //SyncResult syncResult = await mClient.RequestInitialSyncNET(SyncType.All, null, true);
-                //App.SetInitialContentSettings(contentTypes, ViewModel.ExpirationHours);
-                //App.Reset();
-                //App.SyncEntries.Update(syncResult);
-                //await Navigation.PushAsync(new ResultsListPage(mClient, App.SyncEntries));
+                ViewModel.SelectInitialContentSettings();
+                NavigateToNextPage();
             }
             catch (Exception exc)
             {

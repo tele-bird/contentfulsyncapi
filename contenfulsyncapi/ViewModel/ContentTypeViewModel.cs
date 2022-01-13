@@ -1,12 +1,13 @@
-﻿using System;
-using Contentful.Core.Models;
-using Xamarin.Forms;
+﻿using contenfulsyncapi.Dto.DB;
 
 namespace contenfulsyncapi.ViewModel
 {
     public class ContentTypeViewModel : BaseViewModel
     {
+        private const string ALL_ID = "all";
         private const string ALL_NAME = "All";
+
+        public string Id { get; set; }
 
         public string Name { get; set; }
 
@@ -20,39 +21,38 @@ namespace contenfulsyncapi.ViewModel
             }
         }
 
-        public ContentType ContentType { get; set; }
-
-        public ContentTypeViewModel(ContentType contentType)
+        public ContentTypeViewModel(ContentTypeDto contentTypeDto)
         {
-            Name = contentType.Name;
-            ContentType = contentType;
+            Id = contentTypeDto.Id;
+            Name = contentTypeDto.Name;
         }
 
-        private ContentTypeViewModel(string name)
+        private ContentTypeViewModel(string id, string name)
         {
+            Id = id;
             Name = name;
         }
 
         public static ContentTypeViewModel ConstructInstanceAll()
         {
-            return new ContentTypeViewModel(ALL_NAME);
+            return new ContentTypeViewModel(ALL_ID, ALL_NAME);
         }
 
         public bool IsAll()
         {
-            return Name.Equals(ALL_NAME);
+            return Id.Equals(ALL_ID);
         }
 
         public override bool Equals(object obj)
         {
             return (null != obj)
                 && obj.GetType().Equals(this.GetType())
-                && ((ContentTypeViewModel)obj).Name.Equals(this.Name);
+                && ((ContentTypeViewModel)obj).Id.Equals(this.Id);
         }
 
         public override int GetHashCode()
         {
-            return this.Name.GetHashCode();
+            return this.Id.GetHashCode();
         }
 
         public override string ToString()

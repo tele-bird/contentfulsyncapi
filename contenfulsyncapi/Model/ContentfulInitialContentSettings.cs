@@ -1,16 +1,21 @@
 ﻿using System.Collections.Generic;
+using contenfulsyncapi.Dto.DB;
+using Contentful.Core.Models;
 
 namespace contenfulsyncapi.Model
 {
     public class ContentfulInitialContentSettings
     {
-        public List<string> ContentTypeIds { get; set; }
+        public List<ContentTypeDto> AllContentTypeDtos { get; set; }
+
+        public List<string> SelectedContentTypeIds { get; set; }
 
         public int ExpirationMinutes { get; set; }
 
         public ContentfulInitialContentSettings()
         {
-            ContentTypeIds = new List<string>();
+            AllContentTypeDtos = new List<ContentTypeDto>();
+            SelectedContentTypeIds = new List<string>();
         }
     }
 }

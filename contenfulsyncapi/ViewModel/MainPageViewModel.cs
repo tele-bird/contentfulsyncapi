@@ -1,11 +1,10 @@
 ﻿using System.Collections.ObjectModel;
+using contenfulsyncapi.Model;
 
 namespace contenfulsyncapi.ViewModel
 {
     public class MainPageViewModel : BaseViewModel
     {
-        public ObservableCollection<ContentTypeViewModel> ContentTypes { get; set; }
-
         private string mSpaceId;
         public string SpaceId
         {
@@ -36,9 +35,11 @@ namespace contenfulsyncapi.ViewModel
             }
         }
 
-        public MainPageViewModel()
+        public MainPageViewModel(ContentfulAppSettings appSettings)
         {
-            ContentTypes = new ObservableCollection<ContentTypeViewModel>();
+            mSpaceId = appSettings?.SpaceId;
+            mAccessToken = appSettings?.AccessToken;
+            mEnvironment = appSettings?.Environment;
         }
     }
 }

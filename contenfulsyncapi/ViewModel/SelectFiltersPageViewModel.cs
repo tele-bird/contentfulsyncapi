@@ -1,12 +1,20 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using System.Collections.ObjectModel;
+using System.Windows.Input;
+using contenfulsyncapi.Dto.DB;
 using contenfulsyncapi.Model;
+using contenfulsyncapi.Service;
 using Contentful.Core.Models;
+using Xamarin.Forms;
 
 namespace contenfulsyncapi.ViewModel
 {
     public class SelectFiltersPageViewModel : BaseViewModel
     {
+        private readonly CachingContentService mCachingContentService;
+        private ContentfulInitialContentSettings mInitialContentSettings;
+
         private string mPageTitle;
         public string PageTitle
         {
@@ -14,16 +22,6 @@ namespace contenfulsyncapi.ViewModel
             set
             {
                 base.SetProperty<string>(ref mPageTitle, value, "PageTitle");
-            }
-        }
-
-        private SyncType mSelectedSyncTypeIndex;
-        public SyncType SelectedSyncTypeIndex
-        {
-            get { return mSelectedSyncTypeIndex; }
-            set
-            {
-                base.SetProperty<SyncType>(ref mSelectedSyncTypeIndex, value, "SelectedSyncTypeIndex");
             }
         }
 
@@ -39,31 +37,36 @@ namespace contenfulsyncapi.ViewModel
             }
         }
 
-        public SelectFiltersPageViewModel(IEnumerable<ContentType> allContentTypes, ContentfulInitialContentSettings contentfulInitialContentSettings)
+        public ICommand RefreshCommand { get; }
+
+        private bool mIsRefreshing;
+        public bool IsRefreshing
         {
-            SelectedSyncTypeIndex = 0;
+            get { return mIsRefreshing; }
+            set
+            {
+                mIsRefreshing = value;
+                OnPropertyChanged(nameof(IsRefreshing));
+            }
+        }
+
+        internal void SelectInitialContentSettings()
+        {
+            List<string> contentTypeIds = this.GetSelectedContentTypeIds();
+            if (0 == contentTypeIds.Count)
+            {
+                throw new Exception("Select at least one content type for the initial request.");
+            }
+            mInitialContentSettings.SelectedContentTypeIds.AddRange(contentTypeIds);
+            mCachingContentService.InitialContentSettings = mInitialContentSettings;
+        }
+
+        public SelectFiltersPageViewModel(CachingContentService cachingContentService)
+        {
+            mCachingContentService = cachingContentService;
+            mInitialContentSettings = mCachingContentService.InitialContentSettings;
             ContentTypeViewModels = new ObservableCollection<ContentTypeViewModel>();
-            bool allSelected = true;
-            foreach (ContentType contentType in allContentTypes)
-            {
-                ContentTypeViewModel contentTypeViewModel = new ContentTypeViewModel(contentType);
-                if(null != contentfulInitialContentSettings)
-                {
-                    contentTypeViewModel.IsSelected = contentfulInitialContentSettings.ContentTypeIds.Contains(contentTypeViewModel.ContentType.SystemProperties.Id);
-                }
-                contentTypeViewModel.PropertyChanged += ContentTypeViewModel_PropertyChanged;
-                allSelected = allSelected && contentTypeViewModel.IsSelected;
-                ContentTypeViewModels.Add(contentTypeViewModel);
-            }
-            ContentTypeViewModel contentTypeViewModelAll = ContentTypeViewModel.ConstructInstanceAll();
-            contentTypeViewModelAll.IsSelected = allSelected;
-            contentTypeViewModelAll.PropertyChanged += ContentTypeViewModel_PropertyChanged;
-            ContentTypeViewModels.Insert(0, contentTypeViewModelAll);
-            this.RecalculatePageTitle();
-            if (null != contentfulInitialContentSettings)
-            {
-                ExpirationMinutes = contentfulInitialContentSettings.ExpirationMinutes;
-            }
+            RefreshCommand = new Command(ExecuteRefreshCommand);
         }
 
         private void ContentTypeViewModel_PropertyChanged(object sender, System.ComponentModel.PropertyChangedEventArgs e)
@@ -98,17 +101,59 @@ namespace contenfulsyncapi.ViewModel
             PageTitle = $"Content Types to sync ({num})";
         }
 
-        public List<ContentType> GetSelectedContentTypes()
+        private List<string> GetSelectedContentTypeIds()
         {
-            List<ContentType> contentTypes = new List<ContentType>(ContentTypeViewModels.Count - 1);
+            List<string> contentTypeIds = new List<string>();
             foreach(ContentTypeViewModel contentTypeViewModel in ContentTypeViewModels)
             {
                 if(!contentTypeViewModel.IsAll() && contentTypeViewModel.IsSelected)
                 {
-                    contentTypes.Add(contentTypeViewModel.ContentType);
+                    contentTypeIds.Add(contentTypeViewModel.Id);
                 }
             }
-            return contentTypes;
+            return contentTypeIds;
+        }
+
+        public async void ExecuteRefreshCommand(object obj)
+        {
+            if (IsRefreshing) return;
+            IsRefreshing = true;
+            if (null == mInitialContentSettings)
+            {
+                mInitialContentSettings = new ContentfulInitialContentSettings();
+            }
+
+            if(0 == mInitialContentSettings.AllContentTypeDtos.Count)
+            {
+                IEnumerable<ContentType> contentTypes = await mCachingContentService.GetContentTypesAsync();
+                foreach(ContentType contentType in contentTypes)
+                {
+                    mInitialContentSettings.AllContentTypeDtos.Add(new ContentTypeDto(contentType));
+                }
+            }
+
+            SetState(mInitialContentSettings);
+            IsRefreshing = false;
+        }
+
+        private void SetState(ContentfulInitialContentSettings contentfulInitialContentSettings)
+        {
+            ExpirationMinutes = contentfulInitialContentSettings.ExpirationMinutes;
+            ContentTypeViewModels.Clear();
+            bool allSelected = true;
+            foreach (ContentTypeDto contentTypeDto in contentfulInitialContentSettings.AllContentTypeDtos)
+            {
+                ContentTypeViewModel contentTypeViewModel = new ContentTypeViewModel(contentTypeDto);
+                contentTypeViewModel.IsSelected = contentfulInitialContentSettings.SelectedContentTypeIds.Contains(contentTypeViewModel.Id);
+                contentTypeViewModel.PropertyChanged += ContentTypeViewModel_PropertyChanged;
+                allSelected = allSelected && contentTypeViewModel.IsSelected;
+                ContentTypeViewModels.Add(contentTypeViewModel);
+            }
+            ContentTypeViewModel contentTypeViewModelAll = ContentTypeViewModel.ConstructInstanceAll();
+            contentTypeViewModelAll.IsSelected = allSelected;
+            contentTypeViewModelAll.PropertyChanged += ContentTypeViewModel_PropertyChanged;
+            ContentTypeViewModels.Insert(0, contentTypeViewModelAll);
+            this.RecalculatePageTitle();
         }
     }
 }

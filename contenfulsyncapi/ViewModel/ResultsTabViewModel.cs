@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.ObjectModel;
 using System.Windows.Input;
+using contenfulsyncapi.Dto.DB;
 using contenfulsyncapi.Model;
 using contenfulsyncapi.Service;
 using Contentful.Core.Models;
@@ -10,7 +11,7 @@ namespace contenfulsyncapi.ViewModel
 {
     public class ResultsTabViewModel : SyncedDataViewModel
     {
-        private ContentType mContentType;
+        private ContentTypeDto mContentTypeDto;
         private CachingContentService mCachingContentService;
 
         public ObservableCollection<EntryShell> EntryShells { get; set; }
@@ -28,28 +29,28 @@ namespace contenfulsyncapi.ViewModel
             }
         }
 
-        public ResultsTabViewModel(ContentType contentType, CachingContentService cachingContentService)
+        public ResultsTabViewModel(ContentTypeDto contentTypeDto, CachingContentService cachingContentService)
         {
-            mContentType = contentType;
+            mContentTypeDto = contentTypeDto;
             mCachingContentService = cachingContentService;
             EntryShells = new ObservableCollection<EntryShell>();
             RefreshCommand = new Command(ExecuteRefreshCommand);
             RecalculatePageTitle();
         }
 
-        private async void ExecuteRefreshCommand(object obj)
+        public async void ExecuteRefreshCommand(object obj)
         {
             if (IsRefreshing) return;
             IsRefreshing = true;
             int i;
             EntryShell itemToBeReplaced;
-            EntryCollectionShell entryCollectionShell = await mCachingContentService.GetEntriesByContentTypeAsync(mContentType.SystemProperties.Id);
+            EntryCollectionShell entryCollectionShell = await mCachingContentService.GetEntriesByContentTypeAsync(mContentTypeDto.Id);
             bool updated = false;
             if(entryCollectionShell.EntryShells != null)
             {
                 foreach (EntryShell entryShell in entryCollectionShell.EntryShells)
                 {
-                    if (!entryShell.ContentTypeId.Equals(mContentType.SystemProperties.Id))
+                    if (!entryShell.ContentTypeId.Equals(mContentTypeDto.Id))
                     {
                         throw new Exception("Unexpected scenario: content type ids don't match.");
                     }
@@ -88,7 +89,7 @@ namespace contenfulsyncapi.ViewModel
 
         private void RecalculatePageTitle()
         {
-            PageTitle = $"{mContentType.Name} v{SyncVersion} ({EntryShells.Count})";
+            PageTitle = $"{mContentTypeDto.Name} v{SyncVersion} ({EntryShells.Count})";
         }
     }
 }

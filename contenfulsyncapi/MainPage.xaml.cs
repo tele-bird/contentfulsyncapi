@@ -14,14 +14,29 @@ namespace contenfulsyncapi
 
         private CachingContentService mCachingContentService;
 
+        private bool mAppeared;
+
         public MainPage()
         {
-            BindingContext = new MainPageViewModel();
             mCachingContentService = new CachingContentService();
-            ViewModel.SpaceId = mCachingContentService.AppSettings?.SpaceId;
-            ViewModel.AccessToken = mCachingContentService.AppSettings?.AccessToken;
-            ViewModel.Environment = mCachingContentService.AppSettings?.Environment;
+            BindingContext = new MainPageViewModel(mCachingContentService.AppSettings);
             InitializeComponent();
+        }
+
+        protected override void OnAppearing()
+        {
+            base.OnAppearing();
+
+            // do this stuff only the first time the page appears:
+            if (!mAppeared)
+            {
+                // navigate to next page, if needed:
+                if (mCachingContentService.AppSettings != null)
+                {
+                    NavigateToNextPage();
+                }
+                mAppeared = true;
+            }
         }
 
         async void btn_Next_Clicked(System.Object sender, System.EventArgs e)
@@ -32,15 +47,13 @@ namespace contenfulsyncapi
                 {
                     throw new Exception("A required parameter is missing.");
                 }
-                ContentfulClient contentfulClient = new ContentfulClient(ViewModel.SpaceId, ViewModel.AccessToken, ViewModel.Environment);
-                IEnumerable<ContentType> contentTypes = await contentfulClient.RequestContentTypesNET();
                 mCachingContentService.AppSettings = new ContentfulAppSettings
                 {
                     AccessToken = ViewModel.AccessToken,
                     Environment = ViewModel.Environment,
                     SpaceId = ViewModel.SpaceId
                 };
-                await Navigation.PushAsync(new SelectFiltersPage(mCachingContentService, contentTypes));
+                NavigateToNextPage();
             }
             catch (Exception exc)
             {
@@ -48,8 +61,9 @@ namespace contenfulsyncapi
             }
         }
 
-        void btn_SaveSettings_Clicked(System.Object sender, System.EventArgs e)
+        private async void NavigateToNextPage()
         {
+            await Navigation.PushAsync(new SelectFiltersPage(mCachingContentService));
         }
     }
 }
