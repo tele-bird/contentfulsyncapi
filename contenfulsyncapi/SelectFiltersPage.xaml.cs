@@ -27,7 +27,7 @@ namespace contenfulsyncapi
         {
             base.OnAppearing();
 
-            // do this stuff only the first time the page appears:
+            //do this stuff only the first time the page appears:
             if (!mAppeared)
             {
                 // populate the content types in the list:
@@ -38,6 +38,8 @@ namespace contenfulsyncapi
                 {
                     NavigateToNextPage();
                 }
+
+                // ensure this block isn't fired when OnAppearing() fires when navigating back to this page:
                 mAppeared = true;
             }
         }

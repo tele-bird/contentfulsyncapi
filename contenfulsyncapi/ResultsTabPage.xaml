@@ -45,19 +45,26 @@
                 x:Key="entryShellDataTemplateSelector"
                 UpdatedAppearanceTemplate="{StaticResource updatedAppearanceTemplate}"
                 NotUpdatedAppearanceTemplate="{StaticResource notUpdatedAppearanceTemplate}" />
+            <DataTemplate x:Key="resultsTableHeader">
+                <StackLayout Orientation="Vertical" BackgroundColor="{Binding ResultsHeaderBackgroundColor}">
+                    <Label Text="{Binding SyncDescription}" FontSize="Micro" TextColor="{Binding ResultsHeaderTextColor}" HorizontalOptions="Center" />
+                    <Label Text="{Binding LastUpdatedText}" FontSize="Micro" TextColor="{Binding ResultsHeaderTextColor}" HorizontalOptions="Center" />
+                    <Label Text="{Binding ResultsHeaderMessage}" FontSize="Micro" TextColor="{Binding ResultsHeaderTextColor}" HorizontalOptions="Center"/>
+                </StackLayout>
+            </DataTemplate>
         </ResourceDictionary>
     </ContentPage.Resources>
     <StackLayout Orientation="Vertical">
-        <RefreshView IsRefreshing="{Binding IsRefreshing, Mode=OneWay}" Command="{Binding RefreshCommand}">
+        <RefreshView IsRefreshing="{Binding IsRefreshing, Mode=OneWay}" Command="{Binding RefreshCommand}" IsEnabled="{Binding IsRefresherEnabled}">
             <CollectionView
                 x:Name="cv_Results"
                 ItemsSource="{Binding EntryShells}"
                 SelectionMode="None"
-                ItemTemplate="{StaticResource entryShellDataTemplateSelector}"/>
+                ItemTemplate="{StaticResource entryShellDataTemplateSelector}"
+                HeaderTemplate="{StaticResource resultsTableHeader}"
+                Header="{Binding .}"/>
         </RefreshView>
-        <Label Text="Pull down to refresh" FontSize="Micro" TextColor="Blue" HorizontalOptions="Center"/>
-        <Label Text="{Binding ExpiresText}" FontSize="Micro" TextColor="Blue" HorizontalOptions="Center"/>
-        <Label Text="{Binding PreviousUpdatedText}" FontSize="Micro" TextColor="Blue" HorizontalOptions="Center" />
-        <Label Text="{Binding LastUpdatedText}" FontSize="Micro" TextColor="Blue" HorizontalOptions="Center" />
+        <!--<Label Text="{Binding ExpiresText}" FontSize="Micro" TextColor="Blue" HorizontalOptions="Center"/>
+        <Label Text="{Binding PreviousUpdatedText}" FontSize="Micro" TextColor="Blue" HorizontalOptions="Center" />-->
      </StackLayout>
 </ContentPage>

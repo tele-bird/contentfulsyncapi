@@ -81,6 +81,16 @@ namespace contenfulsyncapi.ViewModel
             }
         }
 
+        private string mSyncDescription;
+        public string SyncDescription
+        {
+            get { return mSyncDescription; }
+            set
+            {
+                base.SetProperty<string>(ref mSyncDescription, value, "SyncDescription");
+            }
+        }
+
         public int SyncVersion { get; set; }
 
         protected SyncedDataViewModel()

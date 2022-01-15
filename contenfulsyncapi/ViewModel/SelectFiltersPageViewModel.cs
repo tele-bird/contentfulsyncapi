@@ -57,6 +57,8 @@ namespace contenfulsyncapi.ViewModel
             {
                 throw new Exception("Select at least one content type for the initial request.");
             }
+            mInitialContentSettings.ExpirationMinutes = ExpirationMinutes;
+            mInitialContentSettings.SelectedContentTypeIds.Clear();
             mInitialContentSettings.SelectedContentTypeIds.AddRange(contentTypeIds);
             mCachingContentService.InitialContentSettings = mInitialContentSettings;
         }

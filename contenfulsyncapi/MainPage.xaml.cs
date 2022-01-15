@@ -1,9 +1,7 @@
 ﻿using System;
-using System.Collections.Generic;
 using contenfulsyncapi.Model;
 using contenfulsyncapi.Service;
 using contenfulsyncapi.ViewModel;
-using Contentful.Core.Models;
 using Xamarin.Forms;
 
 namespace contenfulsyncapi

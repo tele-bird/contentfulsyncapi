@@ -1,6 +1,5 @@
 ﻿using System.Collections.Generic;
 using contenfulsyncapi.Dto.DB;
-using Contentful.Core.Models;
 
 namespace contenfulsyncapi.Model
 {
@@ -10,7 +9,7 @@ namespace contenfulsyncapi.Model
 
         public List<string> SelectedContentTypeIds { get; set; }
 
-        public int ExpirationMinutes { get; set; }
+        public int ExpirationMinutes { get; set; } = 1;
 
         public ContentfulInitialContentSettings()
         {

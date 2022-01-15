@@ -97,10 +97,9 @@ namespace contenfulsyncapi.Service
             return await mContentfulClient.RequestContentTypesNET();
         }
 
-        public async Task<EntryCollectionShell> GetEntriesByContentTypeAsync(string contentTypeId)
+        public async Task<EntryCollectionShell> GetEntriesUpdateByContentTypeAsync(string contentTypeId)
         {
-            // return var:
-            EntryCollectionShell result = null;
+            EntryCollectionShell result;
 
             //result = await GetEntriesByContentTypeFromCMSAsync(contentTypeId, contentfulInitialContentSettings);
 
@@ -127,12 +126,7 @@ namespace contenfulsyncapi.Service
                 }
                 else
                 {
-                    // get the expired cache on disk:
-                    string json = Barrel.Current.Get<string>(contentTypeId);
-
-                    // deserialize the cached data:
-                    //result = Barrel.Current.Get<EntryCollectionShell>(contentTypeId);
-                    result = JsonConvert.DeserializeObject<EntryCollectionShell>(json);
+                    result = GetCachedEntriesByContentType(contentTypeId);
 
                     // data is absent or expired, so fetch the "delta" from the CMS:
                     EntryCollectionShell delta = await GetDeltaFromCMSAsync(result.DeltaUrl);
@@ -147,6 +141,13 @@ namespace contenfulsyncapi.Service
 
             // return result:
             return result;
+        }
+
+        public EntryCollectionShell GetCachedEntriesByContentType(string contentTypeId)
+        {
+            return Barrel.Current.Get<EntryCollectionShell>(contentTypeId);
+            //string json = Barrel.Current.Get<string>(contentTypeId);
+            //return JsonConvert.DeserializeObject<EntryCollectionShell>(json);
         }
 
         private async Task<EntryCollectionShell> GetDeltaFromCMSAsync(string deltaUrl)

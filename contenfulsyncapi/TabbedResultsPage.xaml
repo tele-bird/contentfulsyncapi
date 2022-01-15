@@ -2,5 +2,5 @@
 <TabbedPage xmlns="http://xamarin.com/schemas/2014/forms"
              xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
              x:Class="contenfulsyncapi.TabbedResultsPage"
-            Title="Synced Data">
+            Title="{Binding PageTitle}">
 </TabbedPage>
